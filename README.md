@@ -15,3 +15,4 @@ This docker image uploads a pg_dump backup of a database to GCS. It's based almo
 | `POSTGRES_EXTRA_OPTS`   | Any additional options you wish to pass to `pg_dump`. **Default:** `''`                                        |
 | `GCLOUD_KEYFILE_BASE64` | The GCP service account's credential file, in base64. See below for recommendations regarding this.            |
 | `GCLOUD_PROJECT_ID`     | The Project ID which the bucket you wish to backup to is in.                                                   |
+| `BACKUPNAME`            | The prefix for the backup file name.
