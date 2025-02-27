@@ -22,6 +22,7 @@ ENV GCS_BACKUP_BUCKET **None**
 
 # Backup options
 ENV SCHEDULE **None**
+ENV BACKUPNAME **None**
 
 
 ADD run.sh run.sh
