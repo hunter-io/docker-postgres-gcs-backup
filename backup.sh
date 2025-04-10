@@ -3,8 +3,6 @@
 set -e
 set -o pipefail
 
-
-
 # Environment checks
 if [ "${POSTGRES_DATABASE}" = "**None**" ]; then
   echo -n "You need to set the POSTGRES_DATABASE environment variable."
@@ -51,18 +49,22 @@ if [ "${BACKUPNAME}" = "**None**" ]; then
   exit 1
 fi
 
-# Google Cloud Auth
+DATE=`date +"%Y-%m-%d_%H-%M-%S"`
+FILENAME="${BACKUPNAME}_${DATE}.dump"
+export PGPASSWORD=$POSTGRES_PASSWORD
+POSTGRES_HOST_OPTS="-h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER"
+
+echo -n "Performing pg_dump"
+pg_dump $POSTGRES_HOST_OPTS $POSTGRES_EXTRA_OPTS -Fd -j4 -f "${BACKUPNAME}_${DATE}" $POSTGRES_DATABASE
+
+echo -n "Converting directory dump into a single file"
+pg_restore -Fd "${BACKUPNAME}_${DATE}"/ -f $FILENAME
+
 echo -n "Authenticating to Google Cloud"
 echo -n $GCLOUD_KEYFILE_BASE64 | base64 -d > /key.json
 gcloud auth activate-service-account --key-file /key.json --project "$GCLOUD_PROJECT_ID" -q
 
+echo -n "Uploading dump file"
+gcloud storage cp $FILENAME $GCS_BACKUP_BUCKET/$FILENAME
 
-# Postgres dumping
-DATE=`date +"%Y-%m-%d_%H-%M-%S"`
-FILENAME="${BACKUPNAME}_${DATE}.dump"
-export PGPASSWORD=$POSTGRES_PASSWORD
-POSTGRES_HOST_OPTS="-h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER $POSTGRES_EXTRA_OPTS"
-
-echo -n "Uploading pg_dump to $GCS_BACKUP_BUCKET"
-pg_dump $POSTGRES_HOST_OPTS -Fc $POSTGRES_DATABASE | gsutil cp - $GCS_BACKUP_BUCKET/$FILENAME
-echo -n "SQL backup uploaded successfully"
+echo -n "Backup uploaded successfully"
