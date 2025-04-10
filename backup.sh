@@ -58,7 +58,7 @@ echo -n "Performing pg_dump"
 pg_dump $POSTGRES_HOST_OPTS $POSTGRES_EXTRA_OPTS -Fd -j4 -f "${BACKUPNAME}_${DATE}" $POSTGRES_DATABASE
 
 echo -n "Converting directory dump into a single TAR file"
-tar --use-compress-program=pigz -cf $FILENAME "${BACKUPNAME}_${DATE}"/
+tar -cf - "${BACKUPNAME}_${DATE}"/ | pigz -9 > $FILENAME
 
 echo -n "Authenticating to Google Cloud"
 echo -n $GCLOUD_KEYFILE_BASE64 | base64 -d > /key.json
