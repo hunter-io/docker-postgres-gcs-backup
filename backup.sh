@@ -54,6 +54,9 @@ FILENAME="${BACKUPNAME}_${DATE}.tar.gz.dump"
 export PGPASSWORD=$POSTGRES_PASSWORD
 POSTGRES_HOST_OPTS="-h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER"
 
+echo -n "Clearing old backups"
+rm -rf /backups/*
+
 echo -n "Performing pg_dump"
 pg_dump $POSTGRES_HOST_OPTS $POSTGRES_EXTRA_OPTS -Fd -j4 -f "/backups/${BACKUPNAME}_${DATE}" $POSTGRES_DATABASE
 
