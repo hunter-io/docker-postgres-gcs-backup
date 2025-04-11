@@ -54,7 +54,7 @@ FILENAME="${BACKUPNAME}_${DATE}.tar.gz.dump"
 export PGPASSWORD=$POSTGRES_PASSWORD
 POSTGRES_HOST_OPTS="-h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER"
 
-echo -n "Clearing old backups"
+echo -n "Clearing backups directory"
 rm -rf /backups/*
 
 echo -n "Performing pg_dump"
@@ -70,4 +70,5 @@ gcloud auth activate-service-account --key-file /key.json --project "$GCLOUD_PRO
 echo -n "Uploading dump file"
 gcloud storage cp "/backups/${FILENAME}" $GCS_BACKUP_BUCKET/$FILENAME
 
-echo -n "Backup uploaded successfully"
+echo -n "Clearing backups directory"
+rm -rf /backups/*
