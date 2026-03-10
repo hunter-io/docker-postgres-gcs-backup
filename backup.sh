@@ -54,6 +54,23 @@ FILENAME="${BACKUPNAME}_${DATE}.tar.gz.dump"
 export PGPASSWORD=$POSTGRES_PASSWORD
 POSTGRES_HOST_OPTS="-h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER"
 
+# Export SSL settings for libpq (used by pg_dump)
+if [ -n "$POSTGRES_SSLMODE" ]; then
+  export PGSSLMODE=$POSTGRES_SSLMODE
+fi
+
+if [ -n "$POSTGRES_SSLROOTCERT" ]; then
+  export PGSSLROOTCERT=$POSTGRES_SSLROOTCERT
+fi
+
+if [ -n "$POSTGRES_SSLCERT" ]; then
+  export PGSSLCERT=$POSTGRES_SSLCERT
+fi
+
+if [ -n "$POSTGRES_SSLKEY" ]; then
+  export PGSSLKEY=$POSTGRES_SSLKEY
+fi
+
 echo -n "Clearing backups directory"
 rm -rf /backups/*
 
