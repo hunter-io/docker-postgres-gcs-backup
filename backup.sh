@@ -104,7 +104,7 @@ rm -rf /backups/*
 log "Starting pg_dump (format=directory, jobs=4)..."
 STEP_START=$(date +%s)
 # shellcheck disable=SC2086 # HOST_OPTS and EXTRA_OPTS need word splitting into separate arguments
-pg_dump $POSTGRES_HOST_OPTS $POSTGRES_EXTRA_OPTS -Fd -j4 -f "/backups/${BACKUPNAME}_${DATE}" "$POSTGRES_DATABASE"
+pg_dump $POSTGRES_HOST_OPTS $POSTGRES_EXTRA_OPTS --verbose -Fd -j4 -f "/backups/${BACKUPNAME}_${DATE}" "$POSTGRES_DATABASE"
 STEP_END=$(date +%s)
 DUMP_SIZE=$(du -sh "/backups/${BACKUPNAME}_${DATE}" | cut -f1)
 log "pg_dump completed in $(format_duration $((STEP_END - STEP_START))) — dump size: $DUMP_SIZE"
